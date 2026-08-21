@@ -114,15 +114,17 @@ Smartphone GPS → Web Page → Firebase → ESP8266 → Location/Distance Check
 
 ```text
 smart-traffic-control-system/
-│
 ├── firmware/
 │   └── traffic_control.ino
-│
 ├── web/
 │   ├── index.html
 │   ├── script.js
 │   └── style.css
-│
+├── docs/
+│   ├── README.md
+│   ├── project_report.pdf
+│   └── presentation.pdf
+├── .gitignore
 └── README.md
 ```
 
