@@ -11,7 +11,7 @@
 document.addEventListener("DOMContentLoaded", function () {
   // ✅ Firebase Configuration
   const firebaseConfig = {
-    apiKey: "AIzaSyB5zZmN7A7lun8i9mVK_RskmcuBChCePnk",
+    apiKey: "YOUR_FIREBASE_API_KEY",
     authDomain: "ambulance-gps-tracker-e7072.firebaseapp.com",
     databaseURL: "https://ambulance-gps-tracker-e7072-default-rtdb.firebaseio.com",
     projectId: "ambulance-gps-tracker-e7072",
