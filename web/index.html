@@ -1,0 +1,89 @@
+<!--
+  RECONSTRUCTED from screenshots of the original project's index.html
+  (cs_project_code PDF). Not the original file — best-effort transcription.
+  The screenshot shows both a <link rel="stylesheet" href="style.css"> AND
+  an inline <style> block with the same rules — that duplication was present
+  in the source as photographed, so it's kept as-is rather than "fixed".
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ambulance GPS Tracker</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      padding: 0;
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .controls {
+      flex: 1 1 300px;
+      max-width: 400px;
+    }
+
+    #map {
+      flex: 2 1 500px;
+      height: 400px;
+      min-width: 300px;
+    }
+
+    #startButton {
+      padding: 10px 20px;
+      margin-bottom: 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    #locationDisplay {
+      white-space: pre-line;
+      margin: 10px 0;
+    }
+
+    #mapLink {
+      display: inline-block;
+      margin-top: 10px;
+      color: blue;
+      text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🚑 Ambulance Live GPS Tracker</h1>
+  <button id="startButton">Start Sharing Location</button>
+
+  <div id="locationDisplay">📍 Location will be displayed here...</div>
+  <a id="mapLink" href="#" target="_blank">🌐 Open in Google Maps</a>
+
+  <div id="map"></div>
+
+  <!-- ✅ Firebase SDKs -->
+  <script defer src="https://www.gstatic.com/firebasejs/11.6.0/firebase-app-compat.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/11.6.0/firebase-database-compat.js"></script>
+
+  <!-- ✅ Google Maps API -->
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=OUR_GOOGLE_MAPS_API_KEY"></script>
+
+  <!-- ✅ Main Logic -->
+  <script defer src="script.js"></script>
+
+</body>
+</html>

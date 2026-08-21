@@ -1,0 +1,12 @@
+/*
+ * NOT RECOVERABLE from the uploaded material.
+ *
+ * index.html links to this file ( <link rel="stylesheet" href="style.css"> )
+ * but no screenshot of its actual contents was ever shown — only the inline
+ * <style> block inside index.html's <head> was visible, and that's already
+ * reproduced there.
+ *
+ * Left intentionally empty rather than guessing rules that weren't seen.
+ * If your friend's copy has a separate style.css with different/extra
+ * rules, drop them in here.
+ */
