@@ -1,104 +1,260 @@
-# Smart Traffic Control Management System
+# 🚦 Smart Traffic Control Management System
 
-Control Systems (BEC403) project — Bangalore Institute of Technology.
-Two-lane, IR-sensor-based traffic signal control with ambulance
-prioritization via smartphone GPS + Firebase, on an ESP8266 (NodeMCU).
+A two-lane smart traffic control system that manages traffic signals based on vehicle density and provides priority to ambulances using smartphone GPS and Firebase.
 
-> **This repo is a reconstruction, not the original source.**
-> The original code lived with a teammate and wasn't available. Everything
-> here was transcribed from screenshots in the team's own project PDFs/PPT
-> (report, code screenshots, and photos of the physical build). Where the
-> screenshots didn't show something, it's marked `UNKNOWN` in the code and
-> summarized below — nothing was invented to "fill gaps" beyond what was
-> strictly required to compile (see Known Gaps).
+---
 
-## What it does
+##  Project Details
 
-- **Part A — Density-based signal control:** Three IR sensors (Lane 1: 1
-  sensor, Lane 2: 2 sensors) report vehicle presence to the ESP8266, which
-  extends the green-light duration for whichever lane looks busier (5s vs
-  10s), shown live on a 16x2 I2C LCD.
-- **Part B — Ambulance prioritization:** An ambulance-side web page
-  (`web/index.html` + `script.js`) reads the phone's GPS via
-  `navigator.geolocation` and pushes lat/lon to Firebase Realtime Database.
-  The ESP8266 polls Firebase, computes haversine distance to a fixed
-  junction coordinate, and if the ambulance is within ~200m, forces that
-  lane's light green for 10s regardless of IR sensor state.
+- **Project Type:** Academic Project
+- **Semester:** 4th Semester
+- **Academic Year:** 2024–2025
+  
+---
 
-## Hardware (as documented in the project report)
+##  Project Overview
 
-| Component | Role |
+The Smart Traffic Control Management System is designed to improve traffic signal management at a two-lane junction.
+
+The system uses IR sensors to detect vehicle presence and adjust traffic signal timing based on traffic density. It also provides priority to ambulances by using smartphone GPS location, Firebase Realtime Database, and an ESP8266 controller.
+
+> **Note:** This repository is a reconstruction of the project's source code based on the original project report, presentation, code screenshots, and project documentation. The original source code was not available to all team members. Parts that could not be confirmed from the available material are marked as `UNKNOWN`.
+
+---
+
+##  Main Features
+
+###  Traffic Density-Based Signal Control
+
+- Uses IR sensors to detect vehicles in two lanes.
+- The ESP8266 reads the sensor inputs.
+- Traffic density is evaluated based on the sensor states.
+- The lane with higher detected traffic is given a longer green-light duration.
+- Traffic signal status and countdown are displayed on a 16x2 I2C LCD.
+
+###  Ambulance Prioritization
+
+- A smartphone is used to share the ambulance's live GPS location.
+- The location is sent to Firebase Realtime Database.
+- The ESP8266 retrieves the ambulance location from Firebase.
+- The system calculates the distance between the ambulance and the junction.
+- When the ambulance is within the defined proximity, priority is given to the appropriate lane.
+- The selected lane is given a green signal to allow the ambulance to pass.
+
+---
+
+##  System Working
+
+### Part A — Traffic Density Control
+
+IR sensors detect the presence of vehicles in the lanes.
+
+The ESP8266 processes the sensor inputs and determines the traffic condition. Based on the detected traffic density, the corresponding traffic signal timing is controlled.
+
+**Basic Flow:**
+
+Vehicle Detection → IR Sensors → ESP8266 → Density Evaluation → Traffic Signal Control → LCD Display
+
+### Part B — Ambulance Priority
+
+The ambulance-side web page obtains the smartphone's GPS location using the browser's geolocation feature.
+
+The location is sent to Firebase Realtime Database. The ESP8266 retrieves the ambulance location and checks its distance from the junction.
+
+If the ambulance is within the defined range, the system provides priority to the appropriate lane.
+
+**Basic Flow:**
+
+Smartphone GPS → Web Page → Firebase → ESP8266 → Location/Distance Check → Ambulance Priority → Green Signal
+
+---
+
+##  Hardware Used
+
+| Component | Purpose |
 |---|---|
-| ESP8266 (NodeMCU) | Main controller — WiFi, Firebase, LCD, LED, IR sensor I/O |
-| 3x IR obstacle sensors | Lane 1: D0. Lane 2: D4 and D6 |
-| 4x LEDs (2 per lane: red/green) | red1=D5, green1=D7, red2=D8, green2=D3 |
-| 16x2 LCD, I2C backpack (addr 0x27) | SDA=D2, SCL=D1 — shows active lane + countdown |
-| Smartphone | Simulates ambulance GPS via a browser page |
+| ESP8266 (NodeMCU) | Main controller |
+| IR Sensors | Vehicle detection |
+| Red LEDs | Traffic signal indication |
+| Green LEDs | Traffic signal indication |
+| 16x2 I2C LCD | Traffic status and countdown display |
+| Smartphone | Ambulance GPS location source |
 
-## Repo layout
+### Pin Configuration
 
+| Component | ESP8266 Pin |
+|---|---|
+| Lane 1 IR Sensor | D0 |
+| Lane 2 IR Sensor 1 | D4 |
+| Lane 2 IR Sensor 2 | D6 |
+| Red LED 1 | D5 |
+| Green LED 1 | D7 |
+| Red LED 2 | D8 |
+| Green LED 2 | D3 |
+| LCD SDA | D2 |
+| LCD SCL | D1 |
+| LCD I2C Address | 0x27 |
+
+---
+
+##  Software and Technologies
+
+- Arduino IDE
+- ESP8266 / NodeMCU
+- C/C++ (Arduino)
+- HTML
+- JavaScript
+- Firebase Realtime Database
+- Google Maps JavaScript API
+- Browser Geolocation API
+
+---
+
+## 📁 Project Structure
+
+```text
+smart-traffic-control-system/
+│
+├── firmware/
+│   └── traffic_control.ino
+│
+├── web/
+│   ├── index.html
+│   ├── script.js
+│   └── style.css
+│
+└── README.md
 ```
-firmware/
-  traffic_control.ino   # ESP8266 sketch — IR logic, LED/LCD control, Firebase polling, haversine
-web/
-  index.html             # Ambulance-side "Start Sharing Location" page
-  script.js               # Geolocation -> Firebase, Firebase -> Google Map marker
-  style.css                # Empty — never appeared in any source screenshot (see Known Gaps)
-```
 
-## Setup
+---
 
-1. **Firmware:** Open `firmware/traffic_control.ino` in Arduino IDE with the
-   ESP8266 board package installed. Install libraries: `FirebaseESP8266`,
-   `LiquidCrystal_I2C`. `FIREBASE_HOST` is already set to your real database
-   URL. `FIREBASE_AUTH` still needs your **Firebase Realtime Database
-   secret** — this is a different value from the "Web API Key" shown in
-   Project Settings; find it under Firebase Console → Project Settings →
-   Service Accounts → Database Secrets (legacy). Fill in your own
-   `WIFI_SSID` / `WIFI_PASSWORD` too.
-2. **Web page:** `web/script.js` and `web/index.html` now contain the
-   project's real `firebaseConfig` and Google Maps API key (confirmed
-   directly from the Firebase console / Google Cloud console, not just
-   guessed from a slide screenshot). Host statically (Firebase Hosting,
-   GitHub Pages, anything) or open locally for testing (geolocation may
-   require HTTPS on real devices).
-   ⚠️ **Before pushing to a public GitHub repo:** the Google Maps key is
-   currently *unrestricted* (per the Google Cloud console screenshot) —
-   anyone who finds it in your repo can rack up usage on your billing
-   account. Go to Google Cloud Console → APIs & Services → Credentials →
-   your key → restrict it to `HTTP referrers` (your domain) and to the
-   Maps JavaScript API only, before making the repo public. Same caution
-   applies to the Firebase Web API key, though Firebase's own database
-   rules matter more there than the key itself — make sure your Realtime
-   Database rules aren't wide open (`".read": true, ".write": true`) for a
-   public repo.
-3. Set `JUNCTION_LAT` / `JUNCTION_LON` in the firmware to your actual
-   intersection's coordinates.
+## 📂 File Description
 
-## Known gaps (things the screenshots didn't show)
+### `firmware/traffic_control.ino`
 
-- **`web/style.css`** — `index.html` links to it, but its actual contents
-  were never captured in any screenshot; only an inline `<style>` block was
-  visible (and that's already in `index.html`). File is left empty here.
-- **`favicon.ico`** — referenced but never shown; not recoverable from a
-  screenshot.
-- **Rest of the IR sensor `if`/`else if` chain** — the loop() logic
-  screenshot is cut off after 6 of the possible sensor-state combinations.
-  Marked in the `.ino` file with a comment at the point it was cut off.
-- **`#include <ESP8266WiFi.h>`** — never literally visible (only the
-  placeholder `<dummy.h>` was shown), but added because `WiFi.begin()`
-  won't compile without it. Flagged inline as inferred, not photographed.
-- **`map.setCenter(...)` in `updateMapMarker()`** — script.js screenshot
-  cuts off right after `marker.setPosition(newPos)`; whether the map also
-  recentered isn't confirmed, so nothing was added there.
-- **All API keys / secrets** in the screenshots (Firebase apiKey, Google
-  Maps key, Firebase database secret) are treated as compromised/rotated
-  since they were shown on a presentation slide, and replaced with
-  placeholders here on purpose — don't reuse the ones visible in your PDFs.
+ESP8266 firmware responsible for:
 
-## Attribution
+- Reading IR sensor inputs
+- Controlling traffic signal LEDs
+- Displaying information on the LCD
+- Connecting to Wi-Fi
+- Communicating with Firebase
+- Checking ambulance location
+- Handling ambulance priority
 
-Team: Ambuj Mishra, Krithiksha S, Jeevan R, Manasa S K — BEC403 Control
-Systems, Dept. of ETE, BIT, under Dr. Girish Kumar N G. Reconstructed from
-the team's own submitted report/PPT/code-screenshots after the original
-source file became unavailable.
+### `web/index.html`
+
+Web page used for the ambulance-side interface and GPS location sharing.
+
+### `web/script.js`
+
+JavaScript responsible for:
+
+- Obtaining smartphone GPS coordinates
+- Sending location data to Firebase
+- Updating the ambulance location on the map
+
+### `web/style.css`
+
+A stylesheet file included in the project structure. Its original contents could not be confirmed from the available project material.
+
+---
+
+##  Setup
+
+### ESP8266 Firmware
+
+1. Open `firmware/traffic_control.ino` in Arduino IDE.
+2. Select the ESP8266 / NodeMCU board.
+3. Install the required libraries used by the project.
+4. Enter your own Wi-Fi credentials.
+5. Configure your Firebase connection details.
+6. Set the junction coordinates used by the project.
+7. Upload the firmware to the ESP8266.
+
+### Web Application
+
+1. Open the files inside the `web` folder.
+2. Configure your own Firebase web configuration.
+3. Configure your own Google Maps API key if required.
+4. Host the web page using a suitable web-hosting service.
+5. Open the page on the smartphone used for ambulance location sharing.
+6. Allow location access when requested.
+
+> **Security:** Do not upload Wi-Fi passwords, Firebase database secrets, or other private credentials to a public GitHub repository. Use placeholders or private configuration for sensitive information.
+
+---
+
+##  Working Principle
+
+The system works using two main control mechanisms.
+
+**Traffic Density Control:**
+
+IR sensors detect vehicles and provide inputs to the ESP8266. Based on the sensor states, the controller determines the traffic condition and controls the traffic signal LEDs accordingly.
+
+**Ambulance Priority:**
+
+The smartphone provides the ambulance's GPS coordinates. Firebase is used to store and retrieve the location data. The ESP8266 checks the ambulance's location relative to the junction and provides signal priority when the ambulance approaches the junction.
+
+---
+
+##  Project Workflow
+
+1. IR sensors detect vehicles.
+2. ESP8266 receives sensor inputs.
+3. Traffic density is evaluated.
+4. Traffic signal timing is controlled.
+5. LCD displays the current signal information.
+6. Ambulance smartphone shares GPS location.
+7. GPS data is stored in Firebase.
+8. ESP8266 retrieves the ambulance location.
+9. Ambulance proximity to the junction is checked.
+10. Priority is provided to the required lane.
+
+---
+
+##  Known Limitations
+
+- The original source code was not available and therefore this repository is a reconstruction.
+- Some portions of the original firmware were not completely visible in the available code screenshots.
+- The exact contents of `style.css` could not be recovered from the available project material.
+- Original credentials and passwords are not included in this repository.
+- The exact implementation of portions that were not visible in the screenshots cannot be guaranteed.
+
+---
+
+##  Future Enhancements
+
+- Improve traffic density detection.
+- Increase the accuracy of ambulance location detection.
+- Improve signal timing optimization.
+- Add more traffic lanes and junctions.
+- Add additional traffic monitoring features.
+- Improve the web-based monitoring interface.
+
+---
+
+##  Team
+
+- KRITHIKSHA S
+- Ambuj Mishra
+- Jeevan R
+- Manasa S K
+
+**Department:** Electronics & Telecommunication Engineering  
+**Institution:** Bangalore Institute of Technology
+
+---
+
+##  Documentation
+
+The project was developed and documented using the team's project report, presentation, code documentation, and physical prototype.
+
+---
+
+## Project Status
+
+**Academic Project | Completed**
+
+**Electronics & Telecommunication Engineering**
